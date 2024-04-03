@@ -18,7 +18,7 @@ const today = new Date();
 const currMonth = today.getMonth() + 1;
 
 // Add values to dropdown
-const subjectSel = document.getElementById("subject");
+const subjectSel = document.getElementById("month");
 
 Object.keys(months).forEach((month) => {
   const newOption = document.createElement("option");
@@ -27,6 +27,17 @@ Object.keys(months).forEach((month) => {
 });
 
 subjectSel.selectedIndex = currMonth - 1;
+
+// Get favorite dropdown
+const favoriteSel = document.getElementById("item-type");
+
+// Favorite dropdown values
+const itemTypes = ["Book", "Movie", "Song"];
+for (let i = 0; i < itemTypes.length; i++) {
+  const newOption = document.createElement("option");
+  newOption.text = itemTypes[i];
+  favoriteSel.appendChild(newOption);
+}
 
 // Add grid
 const gridContainer = document.getElementById("grid-container");
@@ -38,76 +49,84 @@ Object.keys(months).forEach((key, index) => {
   gridContainer.appendChild(newDiv);
 });
 
+// Get input
+const input = document.getElementById("title");
+
+// Event listener
+input.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    handleAdd();
+  }
+});
+
+function add_button(val, month) {
+  const btn = document.createElement("button");
+  btn.type = "submit";
+  btn.id = "btn-" + val + "-" + month;
+  btn.innerText = "Edit";
+  btn.edit = false;
+  btn.addEventListener("click", handleEdit);
+  return btn;
+}
+
+function handleAdd() {
+  const favorite = favoriteSel.value;
+  add(favorite);
+}
+
+function handleEdit(event) {
+  const element = event.target;
+  const divTarget = "Favorite-" + element.id.substring(4);
+  if (element.edit == false) {
+    const paragraph = document.getElementById(divTarget);
+    paragraph.contentEditable = true;
+    paragraph.style.backgroundColor = "#F4F4F4";
+    element.innerText = "Done";
+    element.edit = true;
+  } else {
+    const paragraph = document.getElementById(divTarget);
+    paragraph.contentEditable = false;
+    paragraph.style = null;
+    element.innerText = "Edit";
+    element.edit = false;
+  }
+}
+
+// Add favorite to grid
 function add(val) {
-  const item = document.getElementById(val).value;
-  document.getElementById(val).value = "";
+  //Get month
+  const month = months[subjectSel.value];
+  const currDiv = document.getElementById(month);
+
+  //Get input value
+  const item = input.value;
+
+  console.log(item);
+  //Set input to blank
+  document.getElementById("title").value = "";
+
+  //Check if the item is empty
   if (item == "") {
     alert("Please enter a title");
     return false;
   }
-  const month = months[subjectSel.value];
-  const currDiv = document.getElementById(month);
+
+  //Check if month already has 3 favorites
+  if (currDiv.children.length == 4) {
+    alert("Favorite number has been reached");
+    return false;
+  }
+
   const newDiv = document.createElement("div");
+  var itemText = document.createElement("p");
   var text = document.createElement("p");
+  itemText.innerText = "Favorite " + val + ": ";
   text.id = "Favorite-" + val + "-" + month;
-  text.innerText = "Favorite " + val + ": " + item;
+  text.innerText = item;
+  newDiv.append(itemText);
   newDiv.append(text);
-  const [edit, done] = add_button(val, month);
-  console.log(edit);
-  newDiv.append(edit);
-  newDiv.append(done);
+  const btn = add_button(val, month);
+  newDiv.append(btn);
   currDiv.appendChild(newDiv);
-  console.log(text);
-}
-
-function book_func(func) {
-  add("book");
-}
-
-function movie_func(func) {
-  add("movie");
-}
-function song_func(func) {
-  add("song");
-}
-
-function add_button(val, month) {
-  const edit = document.createElement("button");
-  edit.type = "submit";
-  edit.id = "edit-" + val + "-" + month;
-  edit.innerText = "Edit";
-  console.log("inside", edit);
-  const done = document.createElement("button");
-  done.type = "submit";
-  done.id = "done-" + val + "-" + month;
-  done.innerText = "Done";
-  return [edit, done];
-}
-//Get edit button
-// const edit_button = document.getElementById("edit-editing");
-
-// edit_button.addEventListener("click", function () {
-//   paragraph.contentEditable = true;
-//   paragraph.style.backgroundColor = "#dddbdb";
-// });
-
-document.addEventListener("click", editButton);
-document.addEventListener("click", doneButton);
-
-function editButton(event) {
-  var element = event.target;
-  if (element.id == "edit-book-4") {
-    const paragraph = document.getElementById("Favorite-book-4");
-    paragraph.contentEditable = true;
-    paragraph.style.backgroundColor = "#F4F4F4";
-  }
-}
-
-function doneButton(event) {
-  var element = event.target;
-  if (element.id == "done-book-4") {
-    const paragraph = document.getElementById("Favorite-book-4");
-    paragraph.contentEditable = false;
-    paragraph.style = null;
-  }
 }
