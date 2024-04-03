@@ -12,23 +12,26 @@
       <select name="subject" id="subject"></select>
       <br /><br />
     </form>
+
     <label for="book">Favorite book:</label>
     <input type="text" id="book" name="book" />
-    <button type="button" class="add" id="add2" onclick="add_book()">
+    <button type="button" class="add" id="add2" onclick='book_func("book");'>
       Add
     </button>
+
+    <input type="reset" value="Reset" />
     <br />
     <br />
     <label for="book">Favorite movie:</label>
     <input type="text" id="movie" name="movie" />
-    <button type="button" class="add" id="add2" onclick="add_movie()">
+    <button type="button" class="add" id="add2" onclick='movie_func("movie");'>
       Add
     </button>
     <br />
     <br />
     <label for="book">Favorite song:</label>
     <input type="text" id="song" name="song" />
-    <button type="button" class="add" id="add2" onclick="add_song()">
+    <button type="button" class="add" id="add2" onclick='song_func("song");'>
       Add
     </button>
     <br />
