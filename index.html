@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form name="form1" id="form1">
+      Which month would you like to add a favorite to?
+      <select name="subject" id="subject"></select>
+      <br /><br />
+    </form>
+    <label for="book">Favorite book:</label>
+    <input type="text" id="book" name="book" />
+    <button type="button" class="add" id="add2" onclick="add_book()">
+      Add
+    </button>
+    <br />
+    <br />
+    <label for="book">Favorite movie:</label>
+    <input type="text" id="movie" name="movie" />
+    <button type="button" class="add" id="add2" onclick="add_movie()">
+      Add
+    </button>
+    <br />
+    <br />
+    <label for="book">Favorite song:</label>
+    <input type="text" id="song" name="song" />
+    <button type="button" class="add" id="add2" onclick="add_song()">
+      Add
+    </button>
+    <br />
+    <br />
+    <div class="grid-container" id="grid-container"></div>
+    <script src="./script.js"></script>
+  </body>
+</html>
