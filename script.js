@@ -1,3 +1,18 @@
+const favoritesData = {
+  January: { id: "1", data: new Map() },
+  February: { id: "2", data: new Map() },
+  March: { id: "3", data: new Map() },
+  April: { id: "4", data: new Map() },
+  May: { id: "5", data: new Map() },
+  June: { id: "6", data: new Map() },
+  July: { id: "7", data: new Map() },
+  August: { id: "8", data: new Map() },
+  September: { id: "9", data: new Map() },
+  October: { id: "10", data: new Map() },
+  November: { id: "11", data: new Map() },
+  December: { id: "12", data: new Map() },
+};
+
 const months = {
   January: "1",
   February: "2",
@@ -39,18 +54,21 @@ for (let i = 0; i < itemTypes.length; i++) {
   favoriteSel.appendChild(newOption);
 }
 
-// Add grid
 const gridContainer = document.getElementById("grid-container");
-Object.keys(months).forEach((key, index) => {
+
+Object.keys(favoritesData).forEach((key, index) => {
   const newDiv = document.createElement("div");
   newDiv.className = "grid-item";
   newDiv.id = index + 1;
   newDiv.innerHTML += "<strong>" + key + "</strong>";
   if (localStorage.getItem(newDiv.id) != null) {
-    const [childDiv, btnID] = JSON.parse(localStorage.getItem(newDiv.id));
-    newDiv.innerHTML += childDiv;
-    const btn = reload_button(btnID);
-    newDiv.appendChild(btn);
+    const childDivs = JSON.parse(localStorage.getItem(newDiv.id));
+    newDiv.innerHTML += childDivs;
+    const divs = newDiv.getElementsByTagName("div");
+    for (i = 0; i < divs.length; i++) {
+      favoritesData[key].data.set(divs[i].id, divs[i]);
+      reload_button(divs[i].getElementsByTagName("button")[0]);
+    }
   }
   gridContainer.appendChild(newDiv);
 });
@@ -66,14 +84,10 @@ input.addEventListener("keypress", function (event) {
   }
 });
 
-function reload_button(id) {
-  const btn = document.createElement("button");
-  btn.type = "submit";
-  btn.id = id;
+function reload_button(btn) {
   btn.innerText = "Edit";
   btn.edit = false;
   btn.addEventListener("click", handleEdit);
-  return btn;
 }
 
 function add_button(val, month) {
@@ -93,7 +107,6 @@ function handleAdd() {
 
 function handleEdit(event) {
   const element = event.target;
-  console.log(element);
   const divTarget = "Favorite-" + element.id.substring(4);
   if (element.edit == false) {
     const paragraph = document.getElementById(divTarget);
@@ -124,7 +137,7 @@ function add(val) {
   //Get input value
   const item = input.value;
 
-  console.log(item);
+  //   console.log(item);
 
   //Set input to blank
   document.getElementById("title").value = "";
@@ -135,13 +148,14 @@ function add(val) {
     return false;
   }
 
-  //Check if month already has 3 favorites
-  if (currDiv.children.length == 4) {
-    alert("Favorite number has been reached");
-    return false;
-  }
+  // // Check if month already has 3 favorites
+  // if (currDiv.children.length == 4) {
+  //   alert("Favorite number has been reached");
+  //   return false;
+  // }
 
   const newDiv = document.createElement("div");
+  newDiv.id = val + "-" + month;
 
   var itemText = document.createElement("p");
   itemText.innerText = "Favorite " + val + ": ";
@@ -152,11 +166,36 @@ function add(val) {
   text.innerText = item;
   newDiv.append(text);
 
-  const btn = add_button(val, month);
+  if (favoritesData[subjectSel.value].data.has(text.id)) {
+    alert("Favorite " + val.toLowerCase() + " already added for this month");
+  } else {
+    const btn = add_button(val, month);
 
-  localStorage.setItem(currDiv.id, JSON.stringify([newDiv.outerHTML, btn.id]));
+    newDiv.append(btn);
 
-  newDiv.append(btn);
+    favoritesData[subjectSel.value].data.set(text.id, newDiv);
 
-  currDiv.appendChild(newDiv);
+    currDiv.appendChild(newDiv);
+    const childDivHTML = reorder_divs(currDiv);
+    localStorage.setItem(currDiv.id, JSON.stringify(childDivHTML));
+  }
+}
+
+function reorder_divs(currDiv) {
+  var childDivHTML = "";
+  var divs = currDiv.getElementsByTagName("div");
+  var listitems = [];
+  for (i = 0; i < divs.length; i++) {
+    listitems.push(divs.item(i));
+  }
+  listitems.sort(function (a, b) {
+    var compA = a.getAttribute("id");
+    var compB = b.getAttribute("id");
+    return compA < compB ? -1 : compA > compB ? 1 : 0;
+  });
+  for (i = 0; i < listitems.length; i++) {
+    currDiv.appendChild(listitems[i]);
+    childDivHTML += listitems[i].outerHTML;
+  }
+  return childDivHTML;
 }
