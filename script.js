@@ -45,20 +45,36 @@ Object.keys(months).forEach((key, index) => {
   const newDiv = document.createElement("div");
   newDiv.className = "grid-item";
   newDiv.id = index + 1;
-  newDiv.innerHTML = "<strong>" + key + "</strong>";
+  newDiv.innerHTML += "<strong>" + key + "</strong>";
+  if (localStorage.getItem(newDiv.id) != null) {
+    const [childDiv, btnID] = JSON.parse(localStorage.getItem(newDiv.id));
+    newDiv.innerHTML += childDiv;
+    const btn = reload_button(btnID);
+    newDiv.appendChild(btn);
+  }
   gridContainer.appendChild(newDiv);
 });
 
 // Get input
 const input = document.getElementById("title");
 
-// Event listener
+// Event listener for adding an item
 input.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     event.preventDefault();
     handleAdd();
   }
 });
+
+function reload_button(id) {
+  const btn = document.createElement("button");
+  btn.type = "submit";
+  btn.id = id;
+  btn.innerText = "Edit";
+  btn.edit = false;
+  btn.addEventListener("click", handleEdit);
+  return btn;
+}
 
 function add_button(val, month) {
   const btn = document.createElement("button");
@@ -77,6 +93,7 @@ function handleAdd() {
 
 function handleEdit(event) {
   const element = event.target;
+  console.log(element);
   const divTarget = "Favorite-" + element.id.substring(4);
   if (element.edit == false) {
     const paragraph = document.getElementById(divTarget);
@@ -93,6 +110,11 @@ function handleEdit(event) {
   }
 }
 
+function handleClear() {
+  localStorage.clear();
+  location.reload();
+}
+
 // Add favorite to grid
 function add(val) {
   //Get month
@@ -103,6 +125,7 @@ function add(val) {
   const item = input.value;
 
   console.log(item);
+
   //Set input to blank
   document.getElementById("title").value = "";
 
@@ -119,14 +142,21 @@ function add(val) {
   }
 
   const newDiv = document.createElement("div");
+
   var itemText = document.createElement("p");
-  var text = document.createElement("p");
   itemText.innerText = "Favorite " + val + ": ";
+  newDiv.append(itemText);
+
+  var text = document.createElement("p");
   text.id = "Favorite-" + val + "-" + month;
   text.innerText = item;
-  newDiv.append(itemText);
   newDiv.append(text);
+
   const btn = add_button(val, month);
+
+  localStorage.setItem(currDiv.id, JSON.stringify([newDiv.outerHTML, btn.id]));
+
   newDiv.append(btn);
+
   currDiv.appendChild(newDiv);
 }
