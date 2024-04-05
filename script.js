@@ -64,9 +64,11 @@ Object.keys(favoritesData).forEach((key, index) => {
   if (localStorage.getItem(newDiv.id) != null) {
     const childDivs = JSON.parse(localStorage.getItem(newDiv.id));
     newDiv.innerHTML += childDivs;
+    console.log(newDiv);
     const divs = newDiv.getElementsByTagName("div");
     for (i = 0; i < divs.length; i++) {
-      favoritesData[key].data.set(divs[i].id, divs[i]);
+      console.log(divs[i].id, divs[i]);
+      favoritesData[key].data.set("Favorite-" + divs[i].id, divs[i]);
       reload_button(divs[i].getElementsByTagName("button")[0]);
     }
   }
@@ -107,20 +109,31 @@ function handleAdd() {
 
 function handleEdit(event) {
   const element = event.target;
-  const divTarget = "Favorite-" + element.id.substring(4);
+  const divTarget = element.id.substring(4);
+  const id = divTarget.slice(-1);
+  const parentDivTarget = document.getElementById(id);
+  const paragraphId = "Favorite-" + element.id.substring(4);
+  const modifiedDiv = document.getElementById(divTarget);
+  console.log(parentDivTarget);
   if (element.edit == false) {
-    const paragraph = document.getElementById(divTarget);
+    const paragraph = document.getElementById(paragraphId);
     paragraph.contentEditable = true;
     paragraph.style.backgroundColor = "#F4F4F4";
     element.innerText = "Done";
     element.edit = true;
   } else {
-    const paragraph = document.getElementById(divTarget);
+    const paragraph = document.getElementById(paragraphId);
     paragraph.contentEditable = false;
     paragraph.style = null;
     element.innerText = "Edit";
     element.edit = false;
   }
+  const childDivHTML = reorder_divs(parentDivTarget);
+  localStorage.setItem(id, JSON.stringify(childDivHTML));
+  favoritesData[
+    parentDivTarget.getElementsByTagName("strong")[0].innerText
+  ].data.set(paragraphId, modifiedDiv);
+  console.log(favoritesData);
 }
 
 function handleClear() {
