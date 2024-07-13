@@ -1,36 +1,19 @@
-body {
-  color: #f07167;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #fdfcdc;
-}
-
-h1 {
-  margin: 20px auto;
-  text-align: center;
-  padding: 10px;
-  border-radius: 5px;
-  color: #fed9b7;
-  width: 400px;
-  background: #f07167;
-}
-
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
-  background: #f07167;
-  border-radius: 5px;
+  background-color: #2196f3;
   padding: 10px;
-  margin-top: 20px;
 }
 .grid-item {
-  background-color: #fed9b7;
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
   font-size: 30px;
   text-align: left;
   object-fit: cover;
   border-radius: 5px;
   margin: 5px;
-  /*overflow: hidden;*/
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
 .dropbtn {
@@ -75,4 +58,20 @@ h1 {
 
 .show {
   display: block;
+}
+
+h1 {
+  text-align: center;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+form label {
+  margin: 10px 0;
+}
+
+form select {
+  margin: 5px 0;
 }
