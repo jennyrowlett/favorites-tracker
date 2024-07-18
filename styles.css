@@ -2,16 +2,60 @@ body {
   color: #f07167;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #fdfcdc;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1 {
-  margin: 20px auto;
-  text-align: center;
+  margin: 10px 0;
+
+  padding: 30px 0;
+  border-radius: 5px;
+  color: #fdfcdc;
+  background: #0081a7;
+  width: 1000px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.view {
+  background: #f07167;
+  color: #fdfcdc;
   padding: 10px;
   border-radius: 5px;
-  color: #fed9b7;
-  width: 400px;
-  background: #f07167;
+  border: none;
+  width: 200px;
+  margin: 2px;
+}
+
+#form {
+  background: #00afb9;
+  color: #fdfcdc;
+  padding: 10px;
+  border-radius: 5px;
+  width: 1000px;
+}
+
+select {
+  border: none;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 5px;
+}
+
+input {
+  border: none;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 5px;
+}
+
+.form-row {
+  margin: 5px;
 }
 
 .grid-container {

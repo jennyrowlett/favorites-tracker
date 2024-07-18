@@ -7,13 +7,15 @@ const bookView = document.getElementById("book-btn");
 const songView = document.getElementById("song-btn");
 const movieView = document.getElementById("movie-btn");
 
-// renders months
-let gridHTML = "";
-for (let i = 0; i < data.length; i++) {
-  gridHTML += `
-    <div class="grid-item" id="${data[i].name}">${data[i].name}</div>`;
-}
-gridContainer.innerHTML = gridHTML;
+// render grid
+const renderGrid = () => {
+  const gridHTML = data
+    .map(
+      (item) => `<div class="grid-item" id="${item.name}">${item.name}</div>`
+    )
+    .join("");
+  gridContainer.innerHTML = gridHTML;
+};
 
 // filter elements for view
 function getElements(elementType) {
@@ -74,3 +76,5 @@ document.getElementById("form").addEventListener("submit", (event) => {
 bookView.addEventListener("click", () => getElements("book"));
 songView.addEventListener("click", () => getElements("song"));
 movieView.addEventListener("click", () => getElements("movie"));
+
+renderGrid();
