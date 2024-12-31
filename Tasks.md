@@ -1,12 +1,13 @@
 Tasks:
 
-2. Write description for website
-3. Improve CSS
-4. Testing code
-5. Type in your username, retrieves your data instead of local storage
-6. Organizing/redoing code
+1. Write description for website
+2. Testing code
+3. Type in your username, retrieves your data instead of local storage
+4. Fix clear button
 
 Completed
 
 - Make it so you can only add one book, movie, and song per month (4/4/24)
-- Fix edit funciton, make it save after page refresh
+- Fix edit function, make it save after page refresh
+- Improve CSS
+- Organizing/redoing code

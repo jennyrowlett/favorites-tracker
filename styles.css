@@ -1,45 +1,67 @@
+:root {
+  /* CSS HEX */
+  --nyanza: #dff2d8ff;
+  --tea-green: #c6dea6ff;
+  --verdigris: #7ebdc3ff;
+  --wenge: #7a6263ff;
+  --sage: #ced097ff;
+  --ebony: #4e5340ff;
+  --davys-gray: #4d5057ff;
+  --licorice: #261c15ff;
+  --office-green: #157f1fff;
+  --silver: rgb(240, 239, 239);
+}
+
 body {
-  color: #f07167;
+  color: var(--licorice);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #fdfcdc;
+  background: var(--silver);
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  margin: 0px;
+  padding: 0px;
+}
+
+header {
+  padding: 10px;
+  width: 100%;
+  margin: 0px;
+  background: white;
 }
 
 h1 {
-  margin: 10px 0;
-
-  padding: 30px 0;
-  border-radius: 5px;
-  color: #fdfcdc;
-  background: #0081a7;
-  width: 1000px;
+  padding-left: 30px;
+  color: var(--licorice);
 }
 
 .container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* Evenly distributes the buttons */
+  /* align-items: center; */
   margin: 10px 0;
+  width: 90%;
 }
 
 .view {
-  background: #f07167;
-  color: #fdfcdc;
-  padding: 10px;
+  color: var(--licorice);
   border-radius: 5px;
   border: none;
-  width: 200px;
-  margin: 2px;
+  width: 25%; /* Use a percentage or specific width */
+  margin: 5px; /* Remove margin to make buttons touch */
+  padding: 15px 0; /* Remove left/right padding to avoid spacing */
+  text-align: center; /* Center text inside the button */
+  background-color: var(--verdigris);
+  flex-grow: 1; /* This will make buttons grow and fill available space */
 }
 
 #form {
-  background: #00afb9;
-  color: #fdfcdc;
+  background: white;
+  color: var(--licorice);
   padding: 10px;
   border-radius: 5px;
-  width: 1000px;
+  width: 100%;
 }
 
 select {
@@ -49,7 +71,7 @@ select {
 }
 
 input {
-  border: none;
+  border: 1px var(--davys-gray) solid;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 5px;
 }
@@ -61,13 +83,13 @@ input {
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
-  background: #f07167;
+  background: var(--verdigris);
   border-radius: 5px;
   padding: 10px;
-  margin-top: 20px;
+  width: 100%;
 }
 .grid-item {
-  background-color: #fed9b7;
+  background-color: white;
   padding: 20px;
   font-size: 30px;
   text-align: left;
@@ -88,7 +110,7 @@ input {
 
 .dropbtn:hover,
 .dropbtn:focus {
-  background-color: #2980b9;
+  background-color: var(--office-green);
 }
 
 .dropdown {
@@ -119,4 +141,18 @@ input {
 
 .show {
   display: block;
+}
+
+#monthly-btn {
+  background: var(--tea-green);
+}
+
+#book-btn {
+  background: var(--verdigris);
+}
+#movie-btn {
+  background: var(--wenge);
+}
+#song-btn {
+  background: var(--sage);
 }

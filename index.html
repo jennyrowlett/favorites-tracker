@@ -7,10 +7,12 @@
     <title>Monthy Favorites Tracker</title>
   </head>
   <body>
-    <h1>Monthly Favorites Tracker</h1>
+    <header>
+      <h1>Monthly Favorites Tracker</h1>
+    </header>
     <!-- Switching views-->
     <div class="container">
-      <button class="view" id="monthy-btn">Monthly View</button>
+      <button class="view" id="monthly-btn">Monthly View</button>
       <button class="view" id="book-btn">Book View</button>
       <button class="view" id="movie-btn">Movie View</button>
       <button class="view" id="song-btn">Song View</button>
@@ -55,7 +57,9 @@
       </form>
     </div>
     <!--Grid display-->
-    <div class="grid-container" id="grid"></div>
+    <div class="container">
+      <div class="grid-container" id="grid"></div>
+    </div>
     <button type="button" id="clear">Clear data</button>
     <script type="module" src="script.js"></script>
   </body>
