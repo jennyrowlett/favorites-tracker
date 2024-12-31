@@ -1,94 +1,130 @@
-import { data } from "./data.js";
+import { data, addItem } from "./data.js";
 
 /*** CONSTANTS ***/
+const credentialsFilePath = "credentials.json";
 const gridContainer = document.getElementById("grid");
 const monthlyView = document.getElementById("monthly-btn");
 const bookView = document.getElementById("book-btn");
 const songView = document.getElementById("song-btn");
 const movieView = document.getElementById("movie-btn");
+const form = document.getElementById("form");
 
-// render grid
-const renderGrid = () => {
-  const gridHTML = data
-    .map(
-      (item) => `<div class="grid-item" id="${item.name}">${item.name}</div>`
-    )
-    .join("");
+/*** HELPER FUNCTIONS ***/
+
+// Helper function to get book image based on title using Google Books API
+const getBookImage = async (title) => {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    title
+  )}&key=${googleBooksAPI}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    const bookThumbnail = data.items
+      ? data.items[0]?.volumeInfo?.imageLinks?.thumbnail
+      : null;
+    return bookThumbnail;
+  } catch (error) {
+    console.error("Error fetching book image:", error);
+    return "";
+  }
+};
+
+// Renders a grid item for a specific element (book, song, movie) type
+const renderElementsByType = async (elementType) => {
+  const promises = Object.entries(data).map(async ([month, details]) => {
+    let itemHTML = "";
+    if (details[elementType] && details[elementType].title) {
+      itemHTML = `<div class="grid-item" id="${month}">${details[elementType].title}`;
+      if (elementType === "book") {
+        let bookImage = await getBookImage(details[elementType].title);
+        itemHTML += `<br/><img src="${bookImage}" alt="Book cover" />`;
+      }
+      itemHTML += `</div>`;
+    }
+    return itemHTML;
+  });
+
+  // Wait for all promises to resolve and join the results into a single string
+  const gridHTML = (await Promise.all(promises)).join("");
   gridContainer.innerHTML = gridHTML;
 };
 
-// filter elements for view
-function getElements(elementType) {
-  let elementHTML = "";
-  for (let i = 0; i < data.length; i++) {
-    let month = data[i];
-    if (month[elementType])
-      elementHTML += `<div class="grid-item" id="${month.name}">${month[elementType]}</div>`;
-  }
-  gridContainer.innerHTML = elementHTML;
-}
-
-//save element to storage
-function saveElement(month, type, title) {
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].compareMonth(month)) {
-      //if found the correct month
-      if (type === "book") {
-        data[i].book = title;
-      } else if (type === "movie") {
-        data[i].movie = title;
-      } else {
-        data[i].song = title;
-      }
+// Render detailed information (book, song, movie) for a specific month
+const renderMonthDetails = (monthName) => {
+  const monthEl = document.getElementById(monthName);
+  const monthData = data[monthName];
+  if (monthData) {
+    let gridItemHTML = "";
+    if (monthData.book?.title) {
+      gridItemHTML += `<div class="book">Book: ${monthData.book.title}</div>`;
     }
-  }
-}
-
-function renderElement(month) {
-  const monthEl = document.getElementById(month);
-  let gridItemHTML = "";
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].compareMonth(month)) {
-      if (data[i].book) {
-        gridItemHTML += `<div class="book">Book: ${data[i].book}</div>`;
-      }
-      if (data[i].movie) {
-        gridItemHTML += `<div class="movie">Movie: ${data[i].movie}</div>`;
-      }
-      if (data[i].song) {
-        gridItemHTML += `<div class="song">Song: ${data[i].song}</div>`;
-      }
+    if (monthData.movie?.title) {
+      gridItemHTML += `<div class="movie">Movie: ${monthData.movie.title}</div>`;
     }
-  }
-  monthEl.innerHTML = `${month}${gridItemHTML}`;
-  console.log(monthEl);
-}
+    if (monthData.song?.title) {
+      gridItemHTML += `<div class="song">Song: ${monthData.song.title}</div>`;
+    }
 
-function getMonthly() {
-  console.log("inside monthly function", data);
-  renderGrid();
-  let gridItemHTML = "";
-  for (let i = 0; i < data.length; i++) {
-    renderElement(data[i].name);
+    monthEl.innerHTML = `${monthName}${gridItemHTML}`;
   }
-}
+};
 
-/*** EVENT LISTENERS ***/
-// puts form entry into data storage
-document.getElementById("form").addEventListener("submit", (event) => {
-  event.preventDefault(); //prevents page refresh
+// Render the full monthly view (grid + month details)
+const renderMonthlyView = () => {
+  //Render grid
+  gridContainer.innerHTML = Object.keys(data)
+    .map((month) => {
+      return `<div class="grid-item" id="${month}">${month}</div>`;
+    })
+    .join("");
+
+  // After rendering the grid, render details for each month
+  Object.keys(data).map((month) => renderMonthDetails(month));
+};
+
+/*** EVENT HANDLERS ***/
+
+// Form submission handler (save book, song, or movie)
+const handleFormSubmit = (event) => {
+  event.preventDefault(); // Prevent page refresh
+
   const selectedMonth = document.getElementById("month").value;
   const selectedElement = document.getElementById("item").value.toLowerCase();
   const itemTitle = document.getElementById("title").value;
-  saveElement(selectedMonth, selectedElement, itemTitle);
-  console.log(data);
-  renderElement(selectedMonth);
-});
+  const itemAuthor = document.getElementById("author").value;
 
-bookView.addEventListener("click", () => getElements("book"));
-songView.addEventListener("click", () => getElements("song"));
-movieView.addEventListener("click", () => getElements("movie"));
-console.log(monthlyView);
-monthlyView.addEventListener("click", () => getMonthly());
+  addItem(selectedMonth, selectedElement, itemTitle, itemAuthor);
+  renderMonthDetails(selectedMonth);
+};
 
-renderGrid();
+// Button click handlers to filter grid by element type (book, movie, song)
+const handleFilterByType = (type) => {
+  return () => renderElementsByType(type);
+};
+
+/*** EVENT LISTENERS ***/
+
+// Form listener for saving elements
+form.addEventListener("submit", handleFormSubmit);
+
+// View-type button listeners
+bookView.addEventListener("click", handleFilterByType("book"));
+songView.addEventListener("click", handleFilterByType("song"));
+movieView.addEventListener("click", handleFilterByType("movie"));
+monthlyView.addEventListener("click", renderMonthlyView);
+
+/*** INITIAL SETUP ***/
+
+// Load the credentials
+const googleBooksAPI = await fetch("credentials.json")
+  .then((response) => response.json()) // Parse the JSON response
+  .then((data) => {
+    const googleBooksAPI = data.googleBooksAPI; // Use the API key from JSON
+    console.log("Loaded API key:", googleBooksAPI);
+    return googleBooksAPI;
+  })
+  .catch((error) => console.error("Error loading credentials:", error));
+
+// Initially render the full monthly view (grid + month details)
+renderMonthlyView();
