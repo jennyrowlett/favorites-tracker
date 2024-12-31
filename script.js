@@ -12,10 +12,13 @@ const form = document.getElementById("form");
 /*** HELPER FUNCTIONS ***/
 
 // Helper function to get book image based on title using Google Books API
-const getBookImage = async (title) => {
+const getBookImage = async (title, author) => {
+  let query = "";
+  if (title) query += `intitle:${title}`;
+  if (author) query += `+inauthor:${author}`;
   const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-    title
-  )}&key=${googleBooksAPI}`;
+    query
+  )}&maxResults=1&key=${googleBooksAPI}`;
 
   try {
     const response = await fetch(url);
@@ -34,15 +37,26 @@ const getBookImage = async (title) => {
 const renderElementsByType = async (elementType) => {
   const promises = Object.entries(data).map(async ([month, details]) => {
     let itemHTML = "";
+
     if (details[elementType] && details[elementType].title) {
       itemHTML = `<div class="grid-item" id="${month}">${details[elementType].title}`;
+
       if (elementType === "book") {
-        let bookImage = await getBookImage(details[elementType].title);
+        let bookImage = details[elementType]["image"];
+
+        if (!bookImage) {
+          // Fetch the book image asynchronously if it's not present
+          bookImage = await getBookImage(details[elementType].title);
+          details[elementType]["image"] = bookImage; // Store the fetched image in the details
+          console.log("fetched book");
+        }
+
+        // Append the image to the itemHTML
         itemHTML += `<br/><img src="${bookImage}" alt="Book cover" />`;
       }
       itemHTML += `</div>`;
     }
-    return itemHTML;
+    return itemHTML; // Ensure each iteration returns a valid HTML string
   });
 
   // Wait for all promises to resolve and join the results into a single string
